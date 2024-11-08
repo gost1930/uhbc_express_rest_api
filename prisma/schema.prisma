@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id        Int      @id @default(autoincrement())
+  name      String
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Classes {
+  id        Int        @id @default(autoincrement())
+  name      String
+  subject   Sebjects[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Sebjects {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Classes   Classes?  @relation(fields: [classesId], references: [id], onDelete: Cascade)
+  classesId Int
+  lesson    Lessens[]
+  weekly   WeeklyTime[]
+}
+
+model Lessens {
+  id         Int       @id @default(autoincrement())
+  name       String
+  pdfLessen  String
+  subject    Sebjects   @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  subject_id Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model WeeklyTime {
+  id        Int      @id @default(autoincrement())
+  name      String
+  pdfTime   String
+  subject    Sebjects   @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  subject_id Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
